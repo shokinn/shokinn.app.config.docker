@@ -1,0 +1,30 @@
+{
+{% if docker_data_root is defined and docker_data_root|length %}
+	"data-root": "{{ docker_data_root }}",
+{% endif %}
+	"hosts": [
+		"fd://", 
+		"unix:///var/run/docker.sock", 
+		"tcp://0.0.0.0:2376"
+	],
+	"debug": false,
+	"tlscacert": "{{ docker_config_cert_path }}/ca.pem",
+	"tlscert": "{{ docker_config_cert_path }}/cert.pem",
+	"tlskey": "{{ docker_config_cert_path }}/key.pem",
+{% if docker_ipv6_enable %}
+	"tlsverify": true,
+	"ipv6": true,
+{% if docker_ipv6_subnet is defined and docker_ipv6_subnet|length %}
+{% if docker_ipv6_default_gw is defined and docker_ipv6_default_gw|length %}
+	"default-gateway-v6": "{{ docker_ipv6_default_gw }}",
+{% endif %}
+	"fixed-cidr-v6": "{{ docker_ipv6_subnet }}"
+{% else %}
+{% if docker_ipv6_default_gw is defined and docker_ipv6_default_gw|length %}
+	"default-gateway-v6": "{{ docker_ipv6_default_gw }}"
+{% endif %}
+{% endif %}
+{% else %}
+	"tlsverify": true
+{% endif %}
+}

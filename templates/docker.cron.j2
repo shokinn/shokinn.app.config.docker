@@ -1,0 +1,5 @@
+# vi: ft=jinja.crontab
+{{ ansible_managed | comment }}
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin
+{{ docker_cleanup_time | default('17 3 * * *') }} root docker system prune -f --volumes

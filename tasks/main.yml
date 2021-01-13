@@ -1,0 +1,70 @@
+---
+# tasks file for docker-config
+- name: Create /etc/systemd/system/docker.service.d dir
+  file:
+    path: /etc/systemd/system/docker.service.d
+    owner: root
+    group: root
+    mode: 0750
+    state: directory
+
+- name: Copy docker.service overrides
+  copy:
+    src: startup_options.conf
+    dest: /etc/systemd/system/docker.service.d/startup_options.conf
+    owner: root
+    group: root
+    mode: 0640
+
+- name: Create /etc/docker/cert dir
+  file:
+    path: /etc/docker/cert
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
+- name: Copy Docker certs
+  copy:
+    src: "{{ docker_config_cert_source }}/{{ item.src }}"
+    dest: "{{ docker_config_cert_path }}/{{ item.dest }}"
+    owner: root
+    group: root
+    mode: 0400
+  with_items:
+    - { src: '{{ docker_config_ca }}', dest: 'ca.pem' }
+    - { src: '{{ docker_config_server_cert }}', dest: 'cert.pem' }
+    - { src: '{{ docker_config_server_key }}', dest: 'key.pem' }
+
+- name: Create new docker data root
+  file:
+    path: "{{ docker_data_root }}"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  when: docker_data_root != ""
+
+- name: Copy docker deamon config
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Reload docker systemd service
+  systemd:
+    name: docker.service
+    state: restarted
+
+- name: Deploy cron script
+  template:
+    src: 'docker.cron.j2'
+    dest: '/etc/cron.d/docker'
+    mode: '0640'
+  no_log: true
