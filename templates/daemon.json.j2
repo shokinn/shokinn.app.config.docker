@@ -4,13 +4,19 @@
 {% endif %}
 	"hosts": [
 		"fd://", 
+{% if (docker_config_cert_source is defined and docker_config_cert_source|length) and (docker_config_cert_path is defined and docker_config_cert_path|length) and (docker_config_ca is defined and docker_config_ca|length) and (docker_config_server_cert is defined and docker_config_server_cert|length) and (docker_config_server_key is defined and docker_config_server_key|length) %}
 		"unix:///var/run/docker.sock", 
 		"tcp://0.0.0.0:2376"
+{% else %}
+		"unix:///var/run/docker.sock"
+{% endif %}
 	],
 	"debug": false,
+{% if (docker_config_cert_source is defined and docker_config_cert_source|length) and (docker_config_cert_path is defined and docker_config_cert_path|length) and (docker_config_ca is defined and docker_config_ca|length) and (docker_config_server_cert is defined and docker_config_server_cert|length) and (docker_config_server_key is defined and docker_config_server_key|length) %}
 	"tlscacert": "{{ docker_config_cert_path }}/ca.pem",
 	"tlscert": "{{ docker_config_cert_path }}/cert.pem",
 	"tlskey": "{{ docker_config_cert_path }}/key.pem",
+{% endif %}
 {% if docker_ipv6_enable %}
 	"tlsverify": true,
 	"ipv6": true,

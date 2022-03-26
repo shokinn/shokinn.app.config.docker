@@ -35,6 +35,7 @@
     - { src: '{{ docker_config_ca }}', dest: 'ca.pem' }
     - { src: '{{ docker_config_server_cert }}', dest: 'cert.pem' }
     - { src: '{{ docker_config_server_key }}', dest: 'key.pem' }
+  when: docker_config_cert_source != ""
 
 - name: Create new docker data root
   file:
