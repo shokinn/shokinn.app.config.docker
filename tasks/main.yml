@@ -16,13 +16,14 @@
     group: root
     mode: 0640
 
-- name: Create /etc/docker/cert dir
+- name: "Create {{ docker_config_cert_path }} dir"
   file:
-    path: /etc/docker/cert
+    path: "{{ docker_config_cert_path }}"
     owner: root
     group: root
     mode: 0755
     state: directory
+  when: docker_config_cert_path is defined and (docker_config_cert_path|length>0)
 
 - name: Copy Docker certs
   copy:
@@ -35,7 +36,9 @@
     - { src: '{{ docker_config_ca }}', dest: 'ca.pem' }
     - { src: '{{ docker_config_server_cert }}', dest: 'cert.pem' }
     - { src: '{{ docker_config_server_key }}', dest: 'key.pem' }
-  when: docker_config_cert_source != ""
+  when:
+    - docker_config_cert_source is defined and (docker_config_cert_source|length>0)
+    - docker_config_cert_path is defined and (docker_config_cert_path|length>0)
 
 - name: Create new docker data root
   file:

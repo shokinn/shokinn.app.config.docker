@@ -20,6 +20,10 @@
 {% if docker_ipv6_enable %}
 	"tlsverify": true,
 	"ipv6": true,
+{% if docker_ipv6_enable_experimental %}
+	"experimental": true,
+	"ip6tables": true,
+{% endif %}
 {% if docker_ipv6_subnet is defined and docker_ipv6_subnet|length %}
 {% if docker_ipv6_default_gw is defined and docker_ipv6_default_gw|length %}
 	"default-gateway-v6": "{{ docker_ipv6_default_gw }}",

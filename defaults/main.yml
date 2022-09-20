@@ -6,7 +6,10 @@ docker_config_ca: "ca.pem"
 docker_config_server_cert: "cert.pem"
 docker_config_server_key: "key.pem"
 docker_config_cert_path: "/etc/docker/cert"
-docker_config_cert_source: ""
+# docker_config_cert_source: ""
 docker_ipv6_enable: false
-docker_ipv6_subnet: "fc00:dead:beef:404::/64"
-docker_ipv6_default_gw: ""
+# The experimental option will enable dockers experimental features
+# as well as IPv6 NAT for docker
+docker_ipv6_enable_experimental: true
+docker_ipv6_subnet: "fd00:1337:cafe:404::/64"
+# docker_ipv6_default_gw: ""
